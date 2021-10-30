@@ -14,8 +14,8 @@ then
 	echo $'\n' "------ DEPLOY KEY NOT SET YET! ----------------" $'\n'
 	exit 1
 else
-	printf '%b\n' "$DEPLOY_KEY" > .ssh/id_rsa
-	chmod 400 .ssh/id_rsa
+	printf '%b\n' "$DEPLOY_KEY" > .ssh/id_ed25519
+	chmod 400 .ssh/id_ed25519
 
 	echo $'\n' "------ CONFIG SUCCESSFUL! ---------------------" $'\n'
 fi
@@ -35,7 +35,7 @@ rsync --progress -avzh \
 	--exclude='Dockerfile' \
 	--exclude='readme.md' \
 	--exclude='README.md' \
-	-e "ssh -i .ssh/id_rsa" \
+	-e "ssh -i .ssh/id_ed25519" \
 	--rsync-path="sudo rsync" . $SSH_USER@$SSH_HOST:$PATH_SOURCE
 
 if [ $? -eq 0 ]
@@ -43,10 +43,10 @@ then
 	echo $'\n' "------ SYNC SUCCESSFUL! -----------------------" $'\n'
 	echo $'\n' "------ RELOADING PERMISSION -------------------" $'\n'
 
-	ssh -i .ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chown -R $OWNER:$OWNER $PATH_SOURCE"
-	ssh -i .ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 775 -R $PATH_SOURCE"
-	ssh -i .ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/storage"
-	ssh -i .ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/public"
+	ssh -i .ssh/id_ed25519 -t $SSH_USER@$SSH_HOST "sudo chown -R $OWNER:$OWNER $PATH_SOURCE"
+	ssh -i .ssh/id_ed25519 -t $SSH_USER@$SSH_HOST "sudo chmod 775 -R $PATH_SOURCE"
+	ssh -i .ssh/id_ed25519 -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/storage"
+	ssh -i .ssh/id_ed25519 -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/public"
 
 	echo $'\n' "------ CONGRATS! DEPLOY SUCCESSFUL!!! ---------" $'\n'
 	exit 0
