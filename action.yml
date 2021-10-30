@@ -1,4 +1,4 @@
-name: 'Laravel Deploy'
+name: 'Laravel deploy 2 from laravel deploy'
 
 description: 'Deploy Laravel Application to Server via SSH by RSync'
 author: 'Hoang Ngoc Quy'
