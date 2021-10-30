@@ -14,16 +14,16 @@ then
 	echo $'\n' "------ DEPLOY KEY NOT SET YET! ----------------" $'\n'
 	exit 1
 else
-	printf '%b\n' "$DEPLOY_KEY" > /root/.ssh/id_rsa
-	chmod 400 /root/.ssh/id_rsa
+	printf '%b\n' "$DEPLOY_KEY" > ~/.ssh/id_rsa
+	chmod 400 ~/.ssh/id_rsa
 
 	echo $'\n' "------ CONFIG SUCCESSFUL! ---------------------" $'\n'
 fi
 
 if [ ! -z "$SSH_PORT" ];
 then
-        printf "Host %b\n\tPort %b\n" "$SSH_HOST" "$SSH_PORT" > /root/.ssh/config
-	ssh-keyscan -p $SSH_PORT -H "$SSH_HOST" >> /root/.ssh/known_hosts
+        printf "Host %b\n\tPort %b\n" "$SSH_HOST" "$SSH_PORT" > ~/.ssh/config
+	ssh-keyscan -p $SSH_PORT -H "$SSH_HOST" >> ~/.ssh/known_hosts
 fi
 
 rsync --progress -avzh \
@@ -35,7 +35,7 @@ rsync --progress -avzh \
 	--exclude='Dockerfile' \
 	--exclude='readme.md' \
 	--exclude='README.md' \
-	-e "ssh -i /root/.ssh/id_rsa" \
+	-e "ssh -i ~/.ssh/id_rsa" \
 	--rsync-path="sudo rsync" . $SSH_USER@$SSH_HOST:$PATH_SOURCE
 
 if [ $? -eq 0 ]
@@ -43,10 +43,10 @@ then
 	echo $'\n' "------ SYNC SUCCESSFUL! -----------------------" $'\n'
 	echo $'\n' "------ RELOADING PERMISSION -------------------" $'\n'
 
-	ssh -i /root/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chown -R $OWNER:$OWNER $PATH_SOURCE"
-	ssh -i /root/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 775 -R $PATH_SOURCE"
-	ssh -i /root/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/storage"
-	ssh -i /root/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/public"
+	ssh -i ~/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chown -R $OWNER:$OWNER $PATH_SOURCE"
+	ssh -i ~/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 775 -R $PATH_SOURCE"
+	ssh -i ~/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/storage"
+	ssh -i ~/.ssh/id_rsa -t $SSH_USER@$SSH_HOST "sudo chmod 777 -R $PATH_SOURCE/public"
 
 	echo $'\n' "------ CONGRATS! DEPLOY SUCCESSFUL!!! ---------" $'\n'
 	exit 0
